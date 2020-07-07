@@ -10,6 +10,14 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>testServlet</servlet-name>
-    <url-pattern>/test-servlet</url-pattern>
+    <url-pattern>/test</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>scanServlet</servlet-name>
+    <servlet-class>ru.kuznetsovnn.webapp.ScanServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>scanServlet</servlet-name>
+    <url-pattern>/scan</url-pattern>
   </servlet-mapping>
 </web-app>
