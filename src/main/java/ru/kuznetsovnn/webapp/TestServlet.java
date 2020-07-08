@@ -17,6 +17,8 @@ public class TestServlet extends HttpServlet {
  
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int x = 0;
+        int y = 8 / x;
         request.getRequestDispatcher("/views/test.jsp").forward(request, response);
     }
  

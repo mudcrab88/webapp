@@ -20,4 +20,16 @@
     <servlet-name>scanServlet</servlet-name>
     <url-pattern>/scan</url-pattern>
   </servlet-mapping>
+  <context-param>
+    <param-name>logdir</param-name>
+    <param-value>\\srv-tomcat\upload_doc</param-value>
+  </context-param>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/404.html</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/error.jsp</location>
+  </error-page>
 </web-app>
