@@ -14,12 +14,7 @@ public class SettingsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String logDir = getServletContext().getInitParameter("logdir");
-        response.setContentType("text/html;charset=cp1251");
-        PrintWriter writer = response.getWriter();
-        try {
-            writer.println("<h2>" +"Папка с логами: " + logDir + "</h2>");
-        } finally {
-            writer.close();  
-        }
+        request.setAttribute("logDir", logDir);
+        request.getRequestDispatcher("/views/settings.jsp").forward(request, response);
     }
 }
