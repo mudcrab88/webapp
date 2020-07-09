@@ -8,11 +8,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
+import com.google.gson.Gson;
  
 public class ScanServlet extends HttpServlet {
  
     public boolean isScanning = false;
     public String scanResult = "";
+    private Gson gson = new Gson();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/views/scan.jsp").forward(request, response);
@@ -21,16 +23,10 @@ public class ScanServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String body = request.getReader().lines().collect(Collectors.joining());
-        if (body.equals("scan")) {
-            response.setStatus(201);
-            response.getWriter().write("ура");
-            response.getWriter().flush();
-            response.getWriter().close();
-        }
-        /*if (isScanning == false) {
+        if ((isScanning == false) && (body.equals("scan"))) {
             //throw new ServletException(messageEncode("В данный момент сканирование уже выполняется"));
             System.out.println("Start scanning...");
-            String logPath = "\\\\srv-tomcat\\upload_doc";
+            String logPath = "C:\\Projects\\nodejs\\logreader\\data";
             File logDir = new File(logPath);
             File[] arrLogDirs = logDir.listFiles();
             isScanning = true;
@@ -46,9 +42,14 @@ public class ScanServlet extends HttpServlet {
             }
             isScanning = false;
         } else {
-            scanResult = messageEncode("В данный момент сканирование уже производится. ") + scanResult;
-            request.setAttribute("scanResult", scanResult);
-        }*/
+            if (body.equals("scan")) {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(gson.toJson(scanResult));
+                response.getWriter().flush();
+                response.getWriter().close();
+            }
+        }
         System.out.println(body);
     }
 

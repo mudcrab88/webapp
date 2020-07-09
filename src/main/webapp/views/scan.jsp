@@ -6,19 +6,26 @@
 </head>
 <body>
 <button id = "scanButton">Сканировать логи</button>
-<div>Результат: <%=request.getAttribute("scanResult")%></div>
+<div id = "scanResult">Результат: <%=request.getAttribute("scanResult")%></div>
 <script >
     let response = fetch('/webapp/scan', {
         method: 'POST',
         body: 'info'
     }); 
-    let button = document.getElementById("scanButton");
-    button.onclick = async function() {
+    let scanButton = document.getElementById("scanButton");
+    let resultDiv = document.getElementById("scanResult");
+    scanButton.onclick = async function() {
         let response = await fetch('/webapp/scan', {
             method: 'POST',
             body: 'scan'
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            console.log('data', data);
+            resultDiv.innerHTML = data;
+        }).catch(function (error) {
+            console.log('error', error);
         });
-        console.log(response);        
     }
 </script>
 </body>
