@@ -8,14 +8,23 @@
 <button id = "scanButton">Сканировать логи</button>
 <div id = "scanResult"><%=request.getAttribute("scanResult")%></div>
 <script >
-    let response = fetch('/webapp/scan', {
-        method: 'POST',
-        body: 'info'
-    }); 
     let scanButton = document.getElementById("scanButton");
     let resultDiv = document.getElementById("scanResult");
+    async function getInfo() {
+        let response = fetch('/webapp/scan', {
+            method: 'POST',
+            body: 'info'
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            console.log(data);
+            resultDiv.innerHTML = data;
+        }).catch(function (error) {
+            console.log('error', error);
+        });
+    }
     scanButton.onclick = async function() {
-        let timerId = setInterval(() => console.log('tick'), 1000);
+        let timerId = setInterval(getInfo, 1000);
         let response = await fetch('/webapp/scan', {
             method: 'POST',
             body: 'scan'
