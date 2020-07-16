@@ -1,5 +1,6 @@
 package ru.kuznetsovnn.webapp;
 
+import ru.kuznetsovnn.webapp.Contract;
 import java.io.File;
 import java.util.stream.Collectors;
 import java.util.Date;
@@ -58,17 +59,18 @@ public class ScanServlet extends HttpServlet {
         File logDir = new File(logPath);
         File[] arrLogDirs = logDir.listFiles();
         isScanning = true;
-        int i = 0;
-        for( i = 0; i < arrLogDirs.length; i++ ){
-            if (arrLogDirs[i].isDirectory()) {
+        int dirCount = 1;
+        for( int i = 0; i < arrLogDirs.length; i++ ){
+            if ((arrLogDirs[i].isDirectory()) && (arrLogDirs[i].getName().compareTo("2020-00-00") > 0)) {
                 File[] arrLogFiles = arrLogDirs[i].listFiles();
                 for( int j = 0; j < arrLogFiles.length; j++ ) {
-                    System.out.println(arrLogFiles[j].getAbsolutePath());
+                    Contract contract = new Contract(arrLogFiles[j]);
                 }
-                scanResult = messageEncode("В данный момент производится сканирование. Обработано папок: "+(i + 1));
+                dirCount++;
+                scanResult = messageEncode( "В данный момент производится сканирование. Обработано папок: "+ dirCount );
             }
         }
-        scanResult = messageEncode("Сканирование завершено. Обработано папок: "+ i);
+        scanResult = messageEncode("Сканирование завершено. Обработано папок: "+ dirCount);
         lastScanDate = new Date();
         isScanning = false;
     }
