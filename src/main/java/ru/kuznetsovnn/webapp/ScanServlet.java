@@ -2,6 +2,7 @@ package ru.kuznetsovnn.webapp;
 
 import java.io.File;
 import java.util.stream.Collectors;
+import java.util.Date;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.ServletConfig;
@@ -13,8 +14,9 @@ import com.google.gson.Gson;
  
 public class ScanServlet extends HttpServlet {
  
-    public boolean isScanning;
+    private boolean isScanning;
     private String scanResult;
+    private Date lastScanDate;
     private Gson gson;
     private String logPath;
 
@@ -22,13 +24,13 @@ public class ScanServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         isScanning = false;
-        scanResult = "Сканирование не производилось";
         gson = new Gson();
-        logPath = "C:\\Projects\\nodejs\\logreader\\data";
+        logPath = "\\\\SRV-TOMCAT\\upload_doc";
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        scanResult = messageEncode(scanResult);
+        String lastScanDateMsg = (lastScanDate == null) ? "не определена" : lastScanDate.toString();
+        scanResult = isScanning ? scanResult : messageEncode("В данный момент сканирование не производится. Последняя дата сканирования:" + lastScanDateMsg);
         request.setAttribute("scanResult", scanResult);
         request.getRequestDispatcher("/views/scan.jsp").forward(request, response);
     }
@@ -56,15 +58,18 @@ public class ScanServlet extends HttpServlet {
         File logDir = new File(logPath);
         File[] arrLogDirs = logDir.listFiles();
         isScanning = true;
-        for( int i = 0; i < arrLogDirs.length; i++ ){
+        int i = 0;
+        for( i = 0; i < arrLogDirs.length; i++ ){
             if (arrLogDirs[i].isDirectory()) {
                 File[] arrLogFiles = arrLogDirs[i].listFiles();
                 for( int j = 0; j < arrLogFiles.length; j++ ) {
                     System.out.println(arrLogFiles[j].getAbsolutePath());
                 }
-                scanResult = messageEncode("Обработано папок: "+i);
+                scanResult = messageEncode("В данный момент производится сканирование. Обработано папок: "+(i + 1));
             }
         }
+        scanResult = messageEncode("Сканирование завершено. Обработано папок: "+ i);
+        lastScanDate = new Date();
         isScanning = false;
     }
 }
